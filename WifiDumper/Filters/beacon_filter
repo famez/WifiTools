@@ -1,0 +1,15 @@
+ldb [2]	
+tax
+ldb [3]
+lsh #8
+add x
+ldb [x + 0]
+rsh #2
+and #3
+jne #0, drop
+ldb [x + 0]
+rsh #4
+jne #8, drop
+ret #-1
+drop: ret #0
+

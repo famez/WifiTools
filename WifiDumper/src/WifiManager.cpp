@@ -319,4 +319,10 @@ WifiManager::PacketHelper::closeSocket() const
 	close(mSocket);
 }
 
+void
+WifiManager::deauthenticate(const std::string& remoteAddr, const std::string& ssid)
+{
+
+}
+
 }

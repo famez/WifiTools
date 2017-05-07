@@ -13,10 +13,34 @@
 
 #include "Packets/BeaconPacket.h"
 #include "Packets/HandShakePacket.h"
+#include "Packets/ProbePacket.h"
+
 
 using namespace Wifi;
 using namespace Packet;
 
+
+void handleProbePacket(RawPacket& raw)
+{
+	ProbePacket packet(raw.getRawData(), raw.getSize());
+
+	std::string type = "Unknown";
+
+	switch(packet.getType())
+	{
+	case ProbePacket::PROBE_REQUEST:
+		type = "Request";
+		break;
+	case ProbePacket::PROBE_RESPONSE:
+		type = "Response";
+		break;
+	default:
+		break;
+	}
+
+	std::cout << "Probe packet received. " << "Type: " << type << " From: " << packet.getRxMacAddr() << " To: " << packet.getTxMacAddr() << std::endl;
+
+}
 
 void handleBeaconPacket(RawPacket& raw)
 {
@@ -66,7 +90,7 @@ int main() {
 
 	std::string wlanIface = "wlan0";
 
-//	std::cin >> wlanIface;
+	std::cin >> wlanIface;
 
 	if(wlans.find(wlanIface) == wlans.end())
 	{
@@ -127,10 +151,44 @@ int main() {
 
 	std::cout << "Everything ready to dump traffic..." << std::endl;
 
+	std::cout << "What do you want to filter?" << std::endl;
+
+	std::cout << "[1] Beacon" << std::endl;
+
+	std::cout << "[2] Handshake" << std::endl;
+
+	std::cout << "[3] Probe" << std::endl;
+
+	int option = 0;
+
+	std::cin >> option;
+
+	switch(option)
+	{
+	case 1:
+		wifiManager.registerHandler(FILTER_BEACON_FRAMES, &handleBeaconPacket);
+		break;
+	case 2:
+		wifiManager.registerHandler(FILTER_HANDSHAKE_FRAMES, &handleHandShakePacket);
+		break;
+	case 3:
+		wifiManager.registerHandler(FILTER_PROBE_FRAMES, &handleProbePacket);
+		break;
+	}
+
 	std::cout << "Registering handlers" << std::endl;
 
-//	wifiManager.registerHandler(FILTER_BEACON_FRAMES, &handleBeaconPacket);
-	wifiManager.registerHandler(FILTER_HANDSHAKE_FRAMES, &handleHandShakePacket);
+
+
+
+
+
+
+
+
+	std::cout << "Starting to sniff" << std::endl;
+
+
 
 	wifiManager.sniff();
 

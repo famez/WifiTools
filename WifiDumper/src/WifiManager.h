@@ -91,6 +91,10 @@ public:
 
 	void registerHandler(EFilterType type, handle_packet handler);
 
+
+	//To do this, we use aircrack code
+	void deauthenticate(const std::string& remoteAddr, const std::string& ssid);
+
 };
 
 }		//End namespace Wifi
